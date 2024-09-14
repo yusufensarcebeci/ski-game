@@ -1,4 +1,4 @@
-import { _decorator, clamp, Component, EventTouch, math, Node, Vec3 } from "cc";
+import { _decorator, clamp, Component, EventTouch, math, Node, UITransform, Vec3, view } from "cc";
 import { GameManager, GameState } from "./GameManager";
 const { ccclass, property } = _decorator;
 
@@ -12,10 +12,16 @@ export class Player extends Component {
   @property(Node) touchArea: Node = null;
 
   private direction: number = 1; // Sağ için 1, sol için -1
-  private targetDirection: number = 1; 
+  private targetDirection: number = 1;
   private currentSpeed: number = 0;
 
   onLoad() {
+    this.touchArea
+      .getComponent(UITransform)
+      .setContentSize(
+        view.getVisibleSize().width * 2,
+        view.getVisibleSize().height * 2
+      );
     this.touchArea.on(Node.EventType.TOUCH_START, this.onTouchStart, this);
   }
 
@@ -31,7 +37,7 @@ export class Player extends Component {
     );
 
     const currentPos = this.node.getPosition();
-    const newX = clamp(currentPos.x + this.currentSpeed * dt, -8, 8);
+    const newX = clamp(currentPos.x + this.currentSpeed * dt, -14, 14);
 
     this.node.setPosition(new Vec3(newX, currentPos.y, currentPos.z));
   }

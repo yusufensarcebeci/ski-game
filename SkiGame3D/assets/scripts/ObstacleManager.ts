@@ -7,8 +7,11 @@ export class ObstacleManager extends Component {
   @property(GameManager) gameManager: GameManager = null;
 
   @property(Prefab) obsPrefab: Prefab = null;
-  @property(Number) obsXMax: number = 12;
-  @property(Number) obsXmin: number = -12;
+  @property(Number) obsPosXMax: number = 12;
+  @property(Number) obsPosXmin: number = -12;
+  @property(Number) obsScaleMax: number = 1.3;
+  @property(Number) obsScaleMin: number = 0.9;
+
   @property(Number) poolSize: number = 500;
 
   private obsPool: Node[] = [];
@@ -23,16 +26,18 @@ export class ObstacleManager extends Component {
   }
 
   public initializeScene() {
-    for (let i = 0; i < 150; i++) {
+    for (let i = 0; i < 250; i++) {
       const obstacle = this.getObstacleFromPool();
       obstacle.active = true;
       obstacle.setPosition(
         new Vec3(
-          this.getRandomInRange(this.obsXMax, this.obsXmin),
+          this.getRandomInRange(this.obsPosXMax, this.obsPosXmin),
           this.spawnPosY,
-          this.getRandomInRange(150, 9)
+          this.getRandomInRange(150, 8)
         )
       );
+      const scale = this.getRandomInRange(this.obsScaleMin,this.obsScaleMax)
+      obstacle.setScale(new Vec3(scale, scale, scale))
     }
   }
 
@@ -51,7 +56,7 @@ export class ObstacleManager extends Component {
       obstacle.setParent(this.node);
       obstacle.setPosition(
         new Vec3(
-          this.getRandomInRange(this.obsXMax, this.obsXmin),
+          this.getRandomInRange(this.obsPosXMax, this.obsPosXmin),
           this.spawnPosY,
           this.getRandomInRange(15, 5)
         )
@@ -73,8 +78,10 @@ export class ObstacleManager extends Component {
       obstacle.setPosition(new Vec3(obstaclePos.x, obstaclePos.y, newZ));
 
       if (newZ < -40) {
-        const spawnX = this.getRandomInRange(this.obsXmin, this.obsXMax);
+        const spawnX = this.getRandomInRange(this.obsPosXmin, this.obsPosXMax);
+        const scale = this.getRandomInRange(this.obsScaleMin, this.obsScaleMax);
         obstacle.setPosition(new Vec3(spawnX, this.spawnPosY, 22));
+        obstacle.setScale(new Vec3(scale, scale, scale));
       }
     });
   }

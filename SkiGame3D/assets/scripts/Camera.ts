@@ -32,7 +32,7 @@ export class Camera extends Component {
   
     protected update(deltaTime: number) {
       if (this.target) {
-        this.smoothFollow(16, 9, deltaTime);
+        this.smoothFollow(15, 14, deltaTime);
       }
     }
 }
