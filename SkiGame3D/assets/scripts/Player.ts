@@ -1,17 +1,26 @@
-import { _decorator, clamp, Component, EventTouch, math, Node, UITransform, Vec3, view } from "cc";
+import {
+  _decorator,
+  clamp,
+  Component,
+  EventTouch,
+  math,
+  Node,
+  UITransform,
+  Vec3,
+  view,
+} from "cc";
 import { GameManager, GameState } from "./GameManager";
 const { ccclass, property } = _decorator;
 
 @ccclass("Player")
 export class Player extends Component {
   @property(GameManager) gameManager: GameManager = null;
-  @property(Number) horizontalSpeed: number = 22; // X eksenindeki hız
-  @property(Number) verticalSpeed: number = 20; // Z eksenindeki hız
-  @property(Number) turnSpeed: number = 5; // Dönüş hızını kontrol eder (ivme için)
-
+  @property(Number) horizontalSpeed: number = 22;
+  @property(Number) verticalSpeed: number = 20;
+  @property(Number) turnSpeed: number = 5;
+  @property(Number) rotationSpeed: number = 5;
   @property(Node) touchArea: Node = null;
 
-  private direction: number = 1; // Sağ için 1, sol için -1
   private targetDirection: number = 1;
   private currentSpeed: number = 0;
 
@@ -32,23 +41,39 @@ export class Player extends Component {
   private movePlayer(dt: number) {
     this.currentSpeed = math.lerp(
       this.currentSpeed,
-      this.targetDirection * this.horizontalSpeed,
+      this.targetDirection * this.horizontalSpeed * this.gameManager.gameSpeed,
       this.turnSpeed * dt
     );
 
     const currentPos = this.node.getPosition();
-    const newX = clamp(currentPos.x + this.currentSpeed * dt, -14, 14);
+    const newX = clamp(currentPos.x + this.currentSpeed * dt , -14, 14);
 
     this.node.setPosition(new Vec3(newX, currentPos.y, currentPos.z));
+
+    this.rotatePlayer(dt);
+  }
+
+  private rotatePlayer(dt: number) {
+    const currentEuler = this.node.eulerAngles;
+
+    const newYRotation = math.lerp(
+      currentEuler.y,
+      this.targetDirection * 25,
+      this.rotationSpeed * dt
+    );
+
+    this.node.setRotationFromEuler(0, newYRotation, 0);
   }
 
   protected update(dt: number) {
     if (this.gameManager.currentState != GameState.GAME_RUNNING) return;
     this.movePlayer(dt);
+  }
 
-    // Z ekseninde sürekli ileri gitme
-    // const currentPos = this.node.getPosition();
-    // const newZ = currentPos.z + this.verticalSpeed * dt;
-    // this.node.setPosition(new Vec3(currentPos.x, currentPos.y, newZ));
+  private resetPlayer() {
+    const vec3 = new Vec3(0, 0, 0);
+    this.node.setRotationFromEuler(vec3);
+    this.node.setPosition(vec3);
+    this.currentSpeed = 0;
   }
 }

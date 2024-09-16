@@ -11,11 +11,12 @@ export class ObstacleManager extends Component {
   @property(Number) obsPosXmin: number = -12;
   @property(Number) obsScaleMax: number = 1.3;
   @property(Number) obsScaleMin: number = 0.9;
-
-  @property(Number) poolSize: number = 500;
+  @property(Number) poolSize: number = 200;
+  @property(Number) duration: number = 5;
 
   private obsPool: Node[] = [];
   private spawnPosY: number = 0.5;
+  private timer: number = 0;
 
   protected onLoad(): void {
     this.initializeObstaclePool();
@@ -26,18 +27,18 @@ export class ObstacleManager extends Component {
   }
 
   public initializeScene() {
-    for (let i = 0; i < 250; i++) {
+    for (let i = 0; i < this.poolSize / 5; i++) {
       const obstacle = this.getObstacleFromPool();
       obstacle.active = true;
       obstacle.setPosition(
         new Vec3(
           this.getRandomInRange(this.obsPosXMax, this.obsPosXmin),
           this.spawnPosY,
-          this.getRandomInRange(150, 8)
+          this.getRandomInRange(100, 7)
         )
       );
-      const scale = this.getRandomInRange(this.obsScaleMin,this.obsScaleMax)
-      obstacle.setScale(new Vec3(scale, scale, scale))
+      const scale = this.getRandomInRange(this.obsScaleMin, this.obsScaleMax);
+      obstacle.setScale(new Vec3(scale, scale, scale));
     }
   }
 
@@ -46,7 +47,7 @@ export class ObstacleManager extends Component {
     if (obstacle) {
       return obstacle;
     } else {
-      console.log("error: no obstacle");
+      // console.log("error: no obstacle");
     }
   }
 
@@ -58,7 +59,7 @@ export class ObstacleManager extends Component {
         new Vec3(
           this.getRandomInRange(this.obsPosXMax, this.obsPosXmin),
           this.spawnPosY,
-          this.getRandomInRange(15, 5)
+          this.getRandomInRange(120, 7)
         )
       );
       obstacle.active = false;
@@ -68,6 +69,21 @@ export class ObstacleManager extends Component {
 
   private getRandomInRange(min: number, max: number): number {
     return Math.random() * (max - min) + min;
+  }
+
+  private spawnObstacle() {
+    const obstacle = this.getObstacleFromPool();
+    if (!obstacle) return;
+    obstacle.active = true;
+    obstacle.setPosition(
+      new Vec3(
+        this.getRandomInRange(this.obsPosXMax, this.obsPosXmin),
+        this.spawnPosY,
+        this.getRandomInRange(30, 22)
+      )
+    );
+    const scale = this.getRandomInRange(this.obsScaleMin, this.obsScaleMax);
+    obstacle.setScale(new Vec3(scale, scale, scale));
   }
 
   private verticalMove(dt: number) {
@@ -80,7 +96,9 @@ export class ObstacleManager extends Component {
       if (newZ < -40) {
         const spawnX = this.getRandomInRange(this.obsPosXmin, this.obsPosXMax);
         const scale = this.getRandomInRange(this.obsScaleMin, this.obsScaleMax);
-        obstacle.setPosition(new Vec3(spawnX, this.spawnPosY, 22));
+        obstacle.setPosition(
+          new Vec3(spawnX, this.spawnPosY, this.getRandomInRange(30, 22))
+        );
         obstacle.setScale(new Vec3(scale, scale, scale));
       }
     });
@@ -89,5 +107,37 @@ export class ObstacleManager extends Component {
   protected update(dt: number): void {
     if (this.gameManager.currentState != GameState.GAME_RUNNING) return;
     this.verticalMove(dt);
+    this.spawnTimer(dt)
+  }
+
+  private spawnTimer(dt: number){
+    this.timer += dt;
+    if (this.timer > this.duration) {
+      this.spawnObstacle();
+      this.timer = 0;
+    }
+  }
+
+  private resetObstacles() {
+    this.node.children.forEach((obstacle: Node) => {
+      obstacle.active = false;
+      this.obsPool.push(obstacle);
+    });
+
+    for (let i = 0; i < this.poolSize / 5; i++) {
+      const obstacle = this.getObstacleFromPool();
+      if (obstacle) {
+        obstacle.active = true;
+        obstacle.setPosition(
+          new Vec3(
+            this.getRandomInRange(this.obsPosXMax, this.obsPosXmin),
+            this.spawnPosY,
+            this.getRandomInRange(120, 7)
+          )
+        );
+        const scale = this.getRandomInRange(this.obsScaleMin, this.obsScaleMax);
+        obstacle.setScale(new Vec3(scale, scale, scale));
+      }
+    }
   }
 }
