@@ -6,7 +6,7 @@ const { ccclass, property } = _decorator;
 export class PlayerCollider extends Component {
   @property(UIManager) uIManager: UIManager = null;
 
-  public start() {
+  protected start(): void {
     let collider = this.node.getComponent(BoxCollider);
     collider.on("onTriggerEnter", this.onCollisionEnter, this);
   }

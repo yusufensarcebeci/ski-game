@@ -16,7 +16,7 @@ export class ObstacleManager extends Component {
 
   private obsPool: Node[] = [];
   private spawnPosY: number = 0.5;
-  private timer: number = 0;
+  private spawnTimer: number = 0;
 
   protected onLoad(): void {
     this.initializeObstaclePool();
@@ -34,7 +34,7 @@ export class ObstacleManager extends Component {
         new Vec3(
           this.getRandomInRange(this.obsPosXMax, this.obsPosXmin),
           this.spawnPosY,
-          this.getRandomInRange(100, 7)
+          this.getRandomInRange(100, 6)
         )
       );
       const scale = this.getRandomInRange(this.obsScaleMin, this.obsScaleMax);
@@ -104,18 +104,18 @@ export class ObstacleManager extends Component {
     });
   }
 
+  private updateSpawnTimer(dt: number) {
+    this.spawnTimer += dt;
+    if (this.spawnTimer > this.duration) {
+      this.spawnObstacle();
+      this.spawnTimer = 0;
+    }
+  }
+
   protected update(dt: number): void {
     if (this.gameManager.currentState != GameState.GAME_RUNNING) return;
     this.verticalMove(dt);
-    this.spawnTimer(dt)
-  }
-
-  private spawnTimer(dt: number){
-    this.timer += dt;
-    if (this.timer > this.duration) {
-      this.spawnObstacle();
-      this.timer = 0;
-    }
+    this.updateSpawnTimer(dt);
   }
 
   private resetObstacles() {

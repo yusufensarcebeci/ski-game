@@ -38,15 +38,6 @@ export class UIManager extends Component {
     this.handleGameScreen();
   }
 
-  private onRetryButtonClicked() {
-    this.scheduleOnce(() => {
-      this.handleLoading();
-    });
-    this.scheduleOnce(() => {
-      this.onPlayButtonClicked();
-    }, 2);
-  }
-
   public handleGameScreen() {
     this.hideAllScreens();
     if (this.gameScreen) {
@@ -100,5 +91,14 @@ export class UIManager extends Component {
     if (activity) {
       this.rotateLoadSprite(dt);
     }
+  }
+
+  private onRetryButtonClicked() {
+    this.scheduleOnce(() => {
+      this.handleLoading();
+    });
+    this.scheduleOnce(() => {
+      this.onPlayButtonClicked();
+    }, 2);
   }
 }

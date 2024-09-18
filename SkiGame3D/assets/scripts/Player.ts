@@ -24,7 +24,7 @@ export class Player extends Component {
   private targetDirection: number = 1;
   private currentSpeed: number = 0;
 
-  onLoad() {
+  protected onLoad(): void {
     this.touchArea
       .getComponent(UITransform)
       .setContentSize(
@@ -46,7 +46,7 @@ export class Player extends Component {
     );
 
     const currentPos = this.node.getPosition();
-    const newX = clamp(currentPos.x + this.currentSpeed * dt , -14, 14);
+    const newX = clamp(currentPos.x + this.currentSpeed * dt, -14, 14);
 
     this.node.setPosition(new Vec3(newX, currentPos.y, currentPos.z));
 
