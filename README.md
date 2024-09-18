@@ -1,7 +1,11 @@
 # ski-game
 
 
-https://github.com/user-attachments/assets/18776c1c-f3d7-42c3-802a-16897ab7d504
+
+
+https://github.com/user-attachments/assets/8ceb8abe-9ee0-40eb-9d3e-79ad520d54cf
+
+
 
 
  Ski-Game is a 3D endless skiing game developed using Cocos Creator 3.7.3. In this game, players control a skier sliding down an endless snowy mountain, dodging obstacles and gathering points. The objective is to survive as long as possible while navigating through increasingly challenging terrain.
