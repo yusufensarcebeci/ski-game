@@ -25,6 +25,7 @@ export class UIManager extends Component {
       this.handleInitScreen();
     }, 2);
   }
+
   private onHomeButtonClicked() {
     this.scheduleOnce(() => {
       this.handleLoading();
@@ -37,7 +38,7 @@ export class UIManager extends Component {
   private onPlayButtonClicked() {
     this.handleGameScreen();
   }
-
+  
   public handleGameScreen() {
     this.hideAllScreens();
     if (this.gameScreen) {
