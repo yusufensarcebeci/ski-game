@@ -9,12 +9,13 @@ import {
   Vec3,
   view,
 } from "cc";
-import { GameManager, GameState } from "./GameManager";
+import { GameStateManager } from "./managers/GameStateManager";
+import { GameState } from "./enums/GameState";
+import { gameSpeed } from "./props/GameProps";
 const { ccclass, property } = _decorator;
 
 @ccclass("Player")
 export class Player extends Component {
-  @property(GameManager) gameManager: GameManager = null;
   @property(Number) horizontalSpeed: number = 22;
   @property(Number) verticalSpeed: number = 20;
   @property(Number) turnSpeed: number = 5;
@@ -41,7 +42,7 @@ export class Player extends Component {
   private movePlayer(dt: number) {
     this.currentSpeed = math.lerp(
       this.currentSpeed,
-      this.targetDirection * this.horizontalSpeed * this.gameManager.gameSpeed,
+      this.targetDirection * this.horizontalSpeed *gameSpeed,
       this.turnSpeed * dt
     );
 
@@ -66,7 +67,7 @@ export class Player extends Component {
   }
 
   protected update(dt: number) {
-    if (this.gameManager.currentState != GameState.GAME_RUNNING) return;
+    if (GameStateManager.getCurrentState() !== GameState.GAME_RUNNING) return;
     this.movePlayer(dt);
   }
 

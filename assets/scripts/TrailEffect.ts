@@ -1,10 +1,11 @@
 import { _decorator, Component, instantiate, Node, Prefab, Vec3 } from "cc";
-import { GameManager, GameState } from "./GameManager";
+import { GameStateManager } from "./managers/GameStateManager";
+import { GameState } from "./enums/GameState";
+import { gameSpeed } from "./props/GameProps";
 const { ccclass, property } = _decorator;
 
 @ccclass("TrailEffect")
 export class TrailEffect extends Component {
-  @property(GameManager) gameManager: GameManager;
   @property(Prefab) entityPrefab: Prefab = null;
   @property(Node) targetNode: Node = null;
   @property(Number) trailLength: number = 20;
@@ -19,7 +20,8 @@ export class TrailEffect extends Component {
   }
 
   protected update(deltaTime: number): void {
-    if (this.gameManager.currentState != GameState.GAME_RUNNING) return;
+    if (GameStateManager.getCurrentState() !== GameState.GAME_RUNNING) return;
+
 
     this.trailTimer += deltaTime;
 
@@ -52,8 +54,10 @@ export class TrailEffect extends Component {
   }
 
   private moveEntities(deltaTime: number) {
-    if (this.gameManager.currentState != GameState.GAME_RUNNING) return;
-    let speed: number = this.gameManager.gameSpeed;
+    if (GameStateManager.getCurrentState() !== GameState.GAME_RUNNING) return;
+
+    
+    let speed: number = gameSpeed;
     for (let i = 0; i < this.entityPool.length; i++) {
       const entity = this.entityPool[i];
       if (entity.active) {

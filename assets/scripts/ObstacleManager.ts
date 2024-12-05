@@ -1,10 +1,12 @@
 import { _decorator, Component, instantiate, Node, Prefab, Vec3 } from "cc";
-import { GameManager, GameState } from "./GameManager";
+import { GameState } from "./enums/GameState";
+import { gameSpeed } from "./props/GameProps";
+import { GameStateManager } from "./managers/GameStateManager";
+
 const { ccclass, property } = _decorator;
 
 @ccclass("ObstacleManager")
 export class ObstacleManager extends Component {
-  @property(GameManager) gameManager: GameManager = null;
 
   @property(Prefab) obsPrefab: Prefab = null;
   @property(Number) obsPosXMax: number = 12;
@@ -89,7 +91,7 @@ export class ObstacleManager extends Component {
   private verticalMove(dt: number) {
     this.node.children.forEach((obstacle: Node) => {
       const obstaclePos = obstacle.getPosition();
-      const newZ = obstaclePos.z - this.gameManager.gameSpeed * dt;
+      const newZ = obstaclePos.z - gameSpeed * dt;
 
       obstacle.setPosition(new Vec3(obstaclePos.x, obstaclePos.y, newZ));
 
@@ -113,7 +115,7 @@ export class ObstacleManager extends Component {
   }
 
   protected update(dt: number): void {
-    if (this.gameManager.currentState != GameState.GAME_RUNNING) return;
+    if (GameStateManager.getCurrentState() !== GameState.GAME_RUNNING) return;
     this.verticalMove(dt);
     this.updateSpawnTimer(dt);
   }

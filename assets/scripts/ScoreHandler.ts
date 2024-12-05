@@ -1,10 +1,10 @@
 import { _decorator, Component, Label, Node } from "cc";
-import { GameManager, GameState } from "./GameManager";
+import { GameStateManager } from "./managers/GameStateManager";
+import { GameState } from "./enums/GameState";
 const { ccclass, property } = _decorator;
 
 @ccclass("ScoreHandler")
 export class ScoreHandler extends Component {
-  @property(GameManager) gameManager: GameManager = null;
   @property(Node) scoreLabel: Node = null;
   @property(Node) gameOverScoreLabel: Node = null;
   @property(Number) incrementInterval: number = 0.1;
@@ -22,7 +22,7 @@ export class ScoreHandler extends Component {
   }
 
   protected update(dt: number) {
-    if (this.gameManager.currentState != GameState.GAME_RUNNING) return;
+    if (GameStateManager.getCurrentState() !== GameState.GAME_RUNNING) return;
 
     this.elapsedTime += dt;
     if (this.elapsedTime >= this.incrementInterval) {

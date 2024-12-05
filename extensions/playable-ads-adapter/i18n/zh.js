@@ -1,1 +1,0 @@
-"use strict";module.exports={description:"适配构建器"};

@@ -1,10 +1,10 @@
 import { _decorator, Component, Node, UITransform, view } from "cc";
-import { GameManager, GameState } from "./GameManager";
+import { GameStateManager } from "./managers/GameStateManager";
+import { GameState } from "./enums/GameState";
 const { ccclass, property } = _decorator;
 
 @ccclass("UIManager")
 export class UIManager extends Component {
-  @property(GameManager) gameManager: GameManager = null;
   @property(Node) loadingScreen: Node = null;
   @property(Node) initScreen: Node = null;
   @property(Node) gameScreen: Node = null;
@@ -44,14 +44,15 @@ export class UIManager extends Component {
     if (this.gameScreen) {
       this.gameScreen.active = true;
       this.touchArea.active = true;
-      this.gameManager.setState(GameState.GAME_RUNNING);
+      // this.gameManager.setState(GameState.GAME_RUNNING);
+      GameStateManager.setCurrentState(GameState.GAME_RUNNING)
     }
   }
 
   public handleEndScreen() {
     this.hideAllScreens();
     if (this.endScreen) {
-      this.gameManager.setState(GameState.GAME_OVER);
+      GameStateManager.setCurrentState(GameState.GAME_OVER)
       this.endScreen.active = true;
       this.touchArea.active = false;
     }
@@ -62,7 +63,7 @@ export class UIManager extends Component {
     if (this.initScreen) {
       this.initScreen.active = true;
       this.touchArea.active = false;
-      this.gameManager.setState(GameState.INIT);
+      GameStateManager.setCurrentState(GameState.INIT)
     }
   }
 
@@ -70,7 +71,7 @@ export class UIManager extends Component {
     this.hideAllScreens();
     if (this.loadingScreen) {
       this.loadingScreen.active = true;
-      this.gameManager.setState(GameState.LOADING);
+      GameStateManager.setCurrentState(GameState.LOADING)
     }
   }
 
